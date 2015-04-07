@@ -1,0 +1,46 @@
+#! /bin/sh
+
+# OVH - DynHost
+#
+# Permet de mettre à jour le champ DYNHOST
+# pour votre nom de domaine.
+# Utilise l'adresse de l'interface ppp0 de 
+# votre système Linux.
+
+# La mise à jour ne se fait que si l'adresse IP
+# a effectivement changé.
+# Fichier de log: dynhost.log
+
+. ./.config
+
+getip() {
+		IP=`curl -s http://ifconfig.me/ip`
+                OLDIP=`cat ./old.ip`
+        }
+#
+
+	echo ---------------------------------- >> ./dynhost.log
+	echo `date` >> ./dynhost.log 
+	echo Updating DynHost >> ./dynhost.log
+	getip
+
+	if [ "$IP" ]; then
+		if [ "$OLDIP" != "$IP" ]; then
+			echo -n "Old IP: " >> ./dynhost.log
+                	echo $OLDIP >> ./dynhost.log
+               		echo -n "New IP: " >> ./dynhost.log
+              		echo $IP >> ./dynhost.log
+			echo "Options!" >> ./dynhost.log
+			if [ "$OPTIONS" =  "" ]; then 
+				OPTIONS="-a $IP" 
+			fi
+			
+			python ipcheck.py $OPTIONS $LOGIN $PASSWORD $HOST >> ./dynhost.log
+			echo -n "$IP" > ./old.ip				
+         	else
+               		echo IP not changed. >> ./dynhost.log
+         	fi
+         else
+	 	echo Unable to determine IP! >> ./dynhost.log
+         fi
+

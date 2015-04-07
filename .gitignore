@@ -1,0 +1,5 @@
+.config
+*.log
+*.dat
+*.html
+*.ip
