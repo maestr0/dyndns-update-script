@@ -1,0 +1,4 @@
+HOST=mydomain.com
+LOGIN=ovh_dynhost_login
+PASSWORD=pass
+OPTIONS=""
